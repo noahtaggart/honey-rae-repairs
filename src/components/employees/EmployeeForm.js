@@ -1,5 +1,6 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useHistory } from "react-router-dom";
+import Select from 'react-select'
 
 
 export const EmployeeForm = () => {
@@ -8,12 +9,30 @@ export const EmployeeForm = () => {
         specialty: "",
         locationId: null
     });
-    const [employeeLocation, updateLocation] = useState([])
-
-
+    const [locations, updateLocations] = useState([])
     useEffect(() => {
-        const specialties = employees.map(employee => employee.specialty)
-        updateSpecialties(specialties.join(", "))
+        fetch("http://localhost:8088/locations")
+            .then(response => response.json())
+            .then(
+                (location) => {
+                    updateLocations(location)
+                }
+            )
+    })
+
+    const locationDropDown = () => {
+        for (const location of locations) {
+            let options = [
+                {value: location.id, label: location.name  }
+            ]
+            return options
+        }
+        
+    }
+    
+
+
+
 
 
     const history = useHistory()
@@ -30,7 +49,7 @@ export const EmployeeForm = () => {
             name: employee.name,
             specialty: employee.specialty,
             locationId: document.querySelector("input[name=location]").value
-            
+
         }
 
         const fetchOption = {
@@ -62,44 +81,45 @@ export const EmployeeForm = () => {
                         placeholder="Full Name"
                         onChange={
                             (evt) => {
-                                const copy = {...employee}
-                                copy.name= evt.target.value
+                                const copy = { ...employee }
+                                copy.name = evt.target.value
                                 update(copy)
                             }
-                                
-                        }/>
+
+                        } />
                 </div>
             </fieldset>
             <fieldset>
                 <div className="form-group">
                     <label htmlFor="name">Specialty</label>
                     <input type="text"
-                    required autoFocus
-                    className="form-control"
-                    placeholder="Specialty"
-                    onChange={
-                        (evt) => {
-                            const copy = {...employee}
-                            copy.specialty= evt.target.value
-                            update(copy)
+                        required autoFocus
+                        className="form-control"
+                        placeholder="Specialty"
+                        onChange={
+                            (evt) => {
+                                const copy = { ...employee }
+                                copy.specialty = evt.target.value
+                                update(copy)
+                            }
                         }
-                    }
-                        />
+                    />
                 </div>
             </fieldset>
             <fieldset>
                 <div className="form-group">
                     <label htmlFor="name">Location</label>
-                    <select name="location" type="select"
-                    onChange={
-                        (evt) => {
-                            const copy = {...employee}
-                            copy.locationId= evt.target.value
-                            update(copy)
-                        }
-                    }>
+                    <Select options={locationDropDown}
 
-                    </select>
+                        onChange={
+                            (evt) => {
+                                const copy = { ...employee }
+                                copy.locationId = evt.target.value
+                                update(copy)
+                            }
+                        }>
+                        
+                    </Select>
 
                 </div>
             </fieldset>
