@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react"
 import { useHistory } from "react-router-dom";
-import Select from 'react-select'
 
 
 export const EmployeeForm = () => {
@@ -18,18 +17,8 @@ export const EmployeeForm = () => {
                     updateLocations(location)
                 }
             )
-    })
+    }, [])
 
-    const locationDropDown = () => {
-        for (const location of locations) {
-            let options = [
-                {value: location.id, label: location.name  }
-            ]
-            return options
-        }
-        
-    }
-    
 
 
 
@@ -44,11 +33,11 @@ export const EmployeeForm = () => {
         evt.preventDefault()
 
 
-
+debugger
         const newEmployee = {
             name: employee.name,
             specialty: employee.specialty,
-            locationId: document.querySelector("input[name=location]").value
+            locationId: parseInt(employee.locationId)
 
         }
 
@@ -109,8 +98,7 @@ export const EmployeeForm = () => {
             <fieldset>
                 <div className="form-group">
                     <label htmlFor="name">Location</label>
-                    <Select options={locationDropDown}
-
+                    <select  name="location" type="select"
                         onChange={
                             (evt) => {
                                 const copy = { ...employee }
@@ -118,8 +106,11 @@ export const EmployeeForm = () => {
                                 update(copy)
                             }
                         }>
+                            <option value="" disabled selected hidden>Choose a location...</option>
+                            {locations.map(location => <option value={location.id}>{location.name}</option>)}
+                    
                         
-                    </Select>
+                    </select>
 
                 </div>
             </fieldset>
