@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Link, useHistory } from "react-router-dom"
+import { getAllTickets } from "../ApiManager"
 
 export const TicketList = () => {
     const [tickets, changeTicket] = useState([])
@@ -19,8 +20,7 @@ export const TicketList = () => {
     }
     useEffect(
         () => {
-            fetch("http://localhost:8088/serviceTickets?_expand=customer&_expand=employee")
-                .then(res => res.json())
+            getAllTickets()
                 .then((data) => {
                     changeTicket(data)
                 })
